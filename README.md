@@ -12,6 +12,7 @@ Vibe-coded to test AI capabilities.
   - Match 4 to clear an entire row or column.
   - Match 5 or more to clear all tiles in that row or column.
 - **Level Progression**: Reach a threshold to level up, unlocking extra rows/columns and a confetti celebration.
+- **Colourful Level Transitions**: Each new level smoothly changes the page background colour.
 - **Hint System**: After 10 seconds of inactivity, tiles fade to gold indicating a possible move.
 - **Tutorial & Game Over Overlays**: First-play guidance and custom end screen with restart.
 - **Smooth Animations**: Tile swaps, falls, shakes, fades, and confetti.
