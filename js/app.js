@@ -14,6 +14,7 @@ let shuffles = 0;
 let shufflesEarned = 0;
 const HIGH_SCORES_KEY = "vibey_high_scores";
 const SOUND_ENABLED_KEY = "vibey_sound_enabled";
+const DISPLAY_HIGH_SCORE_COUNT = 5;
 let soundEnabled = true;
 try {
   const saved = localStorage.getItem(SOUND_ENABLED_KEY);
@@ -458,10 +459,17 @@ function addHighScore(name, score, reachedLevel) {
   saveHighScores(scores);
 }
 
-function populateScores(listEl) {
+function qualifiesForHighScore(score) {
+  const scores = loadHighScores();
+  scores.sort((a, b) => b.score - a.score);
+  if (scores.length < DISPLAY_HIGH_SCORE_COUNT) return true;
+  return score >= scores[DISPLAY_HIGH_SCORE_COUNT - 1].score;
+}
+
+function populateScores(listEl, limit = DISPLAY_HIGH_SCORE_COUNT) {
   const scores = loadHighScores();
   listEl.innerHTML = "";
-  scores.forEach((s) => {
+  scores.slice(0, limit).forEach((s) => {
     const lvl = s.level !== undefined ? s.level : "?";
     const li = document.createElement("li");
     li.textContent = `${s.name}: ${s.score} (Level ${lvl})`;
@@ -481,7 +489,7 @@ function submitScore() {
 function showScores() {
   const overlay = document.getElementById("scores-overlay");
   const list = document.getElementById("scores-list");
-  populateScores(list);
+  populateScores(list, DISPLAY_HIGH_SCORE_COUNT);
   overlay.classList.add("visible");
 }
 
@@ -505,9 +513,23 @@ function toggleSound() {
 function showGameOver() {
   gameOver = true;
   clearTimeout(hintTimeout);
-  populateScores(document.getElementById("scores-list-gameover"));
-  document.getElementById("gameover-overlay").classList.add("visible");
-  document.getElementById("player-name").focus();
+  const scoreVal = Math.floor(totalScore);
+  const qualifies = qualifiesForHighScore(scoreVal);
+  if (qualifies) {
+    populateScores(
+      document.getElementById("scores-list-gameover"),
+      DISPLAY_HIGH_SCORE_COUNT
+    );
+    const entry = document.getElementById("name-entry");
+    if (entry) entry.style.display = "";
+    document.getElementById("gameover-overlay").classList.add("visible");
+    document.getElementById("player-name").focus();
+  } else {
+    const entry = document.getElementById("name-entry");
+    if (entry) entry.style.display = "none";
+    restartGame();
+    showScores();
+  }
 }
 
 function showShufflePrompt() {

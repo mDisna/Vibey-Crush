@@ -37,13 +37,15 @@
       <div class="panel">
         <h1>Game Over</h1>
         <p>You’ve run out of moves.</p>
-        <input
-          id="player-name"
-          type="text"
-          placeholder="Enter your name"
-          onkeydown="if(event.key==='Enter')submitScore()"
-        />
-        <button onclick="submitScore()">Submit</button>
+        <div id="name-entry">
+          <input
+            id="player-name"
+            type="text"
+            placeholder="Enter your name"
+            onkeydown="if(event.key==='Enter')submitScore()"
+          />
+          <button onclick="submitScore()">Submit</button>
+        </div>
         <h2>High Scores</h2>
         <p class="scores-note">Each entry shows the level reached.</p>
         <ol id="scores-list-gameover" class="scores-list"></ol>
