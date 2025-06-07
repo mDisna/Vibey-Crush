@@ -191,3 +191,23 @@ body {
     opacity: 0;
   }
 }
+
+/* Floating High Score Button */
+#show-scores-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  font-size: 30px;
+  border-radius: 50%;
+  border: none;
+  background: #ffce00;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 11;
+}
+#show-scores-btn:hover {
+  background: #f0b700;
+}

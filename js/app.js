@@ -1,4 +1,5 @@
 const tileTypes = ["💎", "🔶", "🔷", "🔴", "🟢", "🟣"];
+const HIGH_SCORES_KEY = "vibey-highscores";
 let level = 1,
   levelScore = 0,
   totalScore = 0;
@@ -68,11 +69,12 @@ function renderBoard() {
     }
   }
   updateUI();
-  if (!gameOver && !findHint()) {
-    gameOver = true;
-    clearTimeout(hintTimeout);
-    document.getElementById("gameover-overlay").classList.add("visible");
-  }
+    if (!gameOver && !findHint()) {
+      gameOver = true;
+      clearTimeout(hintTimeout);
+      document.getElementById("gameover-overlay").classList.add("visible");
+      document.getElementById("player-name").focus();
+    }
 }
 
 function handleClick(r, c) {
@@ -333,12 +335,53 @@ function showHint() {
   }, 50);
 }
 
+function loadHighScores() {
+  return JSON.parse(localStorage.getItem(HIGH_SCORES_KEY) || "[]");
+}
+function saveHighScores(list) {
+  localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(list));
+}
+function addHighScore(name, score) {
+  const list = loadHighScores();
+  list.push({ name, score: Math.floor(score) });
+  list.sort((a, b) => b.score - a.score);
+  if (list.length > 10) list.length = 10;
+  saveHighScores(list);
+}
+function renderHighScores() {
+  const ul = document.getElementById("highscore-list");
+  if (!ul) return;
+  ul.innerHTML = "";
+  loadHighScores().forEach(({ name, score }) => {
+    const li = document.createElement("li");
+    li.textContent = `${name}: ${score}`;
+    ul.appendChild(li);
+  });
+}
+function openHighscores() {
+  renderHighScores();
+  document.getElementById("highscores-overlay").classList.add("visible");
+}
+function closeHighscores() {
+  document.getElementById("highscores-overlay").classList.remove("visible");
+}
+function submitScore() {
+  const input = document.getElementById("player-name");
+  const name = (input.value || "Anonymous").trim();
+  addHighScore(name, totalScore);
+  input.value = "";
+  document.getElementById("gameover-overlay").classList.remove("visible");
+  openHighscores();
+}
+
 function startGame() {
   document.getElementById("tutorial-overlay").classList.remove("visible");
   restartGame();
 }
 function restartGame() {
   document.getElementById("gameover-overlay").classList.remove("visible");
+  document.getElementById("player-name").value = "";
+  closeHighscores();
   level = 1;
   levelScore = 0;
   totalScore = 0;
