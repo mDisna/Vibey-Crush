@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "test": "node test/findRuns.test.mjs"
+    "test": "sh -c 'for f in test/*.test.mjs; do node \"$f\"; done'"
   }
 }

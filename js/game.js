@@ -51,7 +51,8 @@ export function findRuns(board, length) {
 }
 
 export class Game {
-  constructor() {
+  constructor(options = {}) {
+    this.random = options.random || Math.random;
     this.level = 1;
     this.levelScore = 0;
     this.totalScore = 0;
@@ -73,7 +74,7 @@ export class Game {
   }
 
   getRandomTile() {
-    return tileTypes[Math.floor(Math.random() * tileTypes.length)];
+    return tileTypes[Math.floor(this.random() * tileTypes.length)];
   }
 
   generateBoard() {
