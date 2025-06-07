@@ -167,7 +167,7 @@ function processMatches() {
       ) {
         run++;
       } else if (run >= 5) {
-        clearMany(Array.from({ length: run }, (_, i) => [r, c - run + i]));
+        clearMany(Array.from({ length: boardCols }, (_, i) => [r, i]));
         return;
       } else {
         run = 1;
@@ -185,7 +185,7 @@ function processMatches() {
       ) {
         run++;
       } else if (run >= 5) {
-        clearMany(Array.from({ length: run }, (_, i) => [r - run + i, c]));
+        clearMany(Array.from({ length: boardRows }, (_, i) => [i, c]));
         return;
       } else {
         run = 1;
