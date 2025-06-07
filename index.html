@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Vibey Crush</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <style></style>
+  </head>
+  <body>
+    <div id="info">
+      <div id="level">Level: 1</div>
+      <div id="score">Score: 0</div>
+      <div id="remaining">Next in: 10</div>
+    </div>
+    <div id="game"></div>
+
+    <!-- Tutorial Overlay -->
+    <div id="tutorial-overlay" class="overlay visible">
+      <div class="panel">
+        <h1>Welcome to Vibey Crush!</h1>
+        <p>
+          Swap two adjacent tiles to match 3 or more emojis. Matches clear
+          tiles, earn points, and level up!
+        </p>
+        <p>
+          Collect enough points to advance levels. Hints appear after
+          inactivity. Good luck!
+        </p>
+        <button onclick="startGame()">Let's Play!</button>
+      </div>
+    </div>
+
+    <!-- Game Over Overlay -->
+    <div id="gameover-overlay" class="overlay">
+      <div class="panel">
+        <h1>Game Over</h1>
+        <p>You’ve run out of moves.</p>
+        <button onclick="restartGame()">Restart</button>
+      </div>
+    </div>
+
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
