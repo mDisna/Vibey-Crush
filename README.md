@@ -18,6 +18,7 @@ Vibe-coded to test AI capabilities.
 - **Smooth Animations**: Tile swaps, falls, shakes, fades, and confetti.
 - **High Scores**: Submit your name after game over to save your score and the level reached. View the top results via the trophy button.
 - **Random Tones**: Each match plays a random note using Tone.js.
+- **Shuffles**: Earn a shuffle every 100 points to continue when no moves remain.
 
 ## Getting Started
 
@@ -31,3 +32,4 @@ Vibe-coded to test AI capabilities.
 - **Cascades**: Trigger chain reactions for bonus points.
 - **Level Up**: Earn enough points to advance levels and expand the board.
 - **No Moves Left**: Game ends when no valid match is possible.
+- **Use Shuffles**: If you have a shuffle available on game over, you can shuffle the board and keep playing.
