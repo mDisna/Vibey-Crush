@@ -35,3 +35,12 @@ Completely vibe-coded to test AI capabilities using `ChatGPT o4-mini-high` (init
 - **Level Up**: Earn enough points to advance levels and expand the board.
 - **No Moves Left**: Game ends when no valid match is possible.
 - **Use Shuffles**: If you have a shuffle available on game over, you can shuffle the board and keep playing.
+
+## Running tests
+
+Use `npm test` to run the Node-based unit tests:
+
+```bash
+npm test
+```
+
