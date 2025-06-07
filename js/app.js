@@ -38,6 +38,12 @@ function getRandomTile() {
   return tileTypes[Math.floor(Math.random() * tileTypes.length)];
 }
 
+function updateBackground() {
+  const hue = (level * 40) % 360;
+  const nextHue = (hue + 60) % 360;
+  document.body.style.background = `linear-gradient(135deg, hsl(${hue},70%,70%), hsl(${nextHue},70%,60%))`;
+}
+
 function updateUI() {
   document.getElementById("level").textContent = `Level: ${level}`;
   document.getElementById("score").textContent = `Score: ${Math.floor(
@@ -280,6 +286,7 @@ function clearMany(cells) {
     if (level % 5 === 0) boardCols = Math.min(boardCols + 1, 20);
     if (level % 10 === 0) boardRows = Math.min(boardRows + 1, 15);
     launchConfetti();
+    updateBackground();
     threshold = getThreshold(level);
   }
 
@@ -427,6 +434,7 @@ function restartGame() {
   boardCols = 5;
   gameOver = false;
   cascadeCount = 1;
+  updateBackground();
   board = generateBoard();
   renderBoard();
   resetHintTimer();
@@ -438,6 +446,7 @@ board = generateBoard();
 renderBoard();
 resetHintTimer();
 setTimeout(processMatches, 300);
+updateBackground();
 
 updateSoundToggle();
 document.getElementById("sound-toggle").onclick = toggleSound;
