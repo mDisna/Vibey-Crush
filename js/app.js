@@ -54,6 +54,10 @@ function updateUI() {
   document.getElementById("remaining").textContent = `Next in: ${Math.ceil(
     rem
   )}`;
+  const threshold = getThreshold(level);
+  const percent = Math.min(100, (levelScore / threshold) * 100);
+  const bar = document.querySelector("#progress .bar");
+  if (bar) bar.style.width = `${percent}%`;
 }
 
 function generateBoard() {
