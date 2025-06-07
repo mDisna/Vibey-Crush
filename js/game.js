@@ -232,13 +232,13 @@ export class Game {
   }
 
   clearMany(cells, updateUI, renderBoard, launchConfetti, updateBackground, resetHintTimer) {
-    playRandomTone();
     const base = cells.length;
     const bonus = (this.cascadeCount - 1) * 0.5;
     this.totalScore += base + bonus;
     this.levelScore += base + bonus;
     this.cascadeCount++;
     const awarded = this.checkShuffleAward();
+    if (!awarded) playRandomTone();
     if (awarded && updateUI) updateUI();
 
     const prevRows = this.boardRows;
