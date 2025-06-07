@@ -48,6 +48,9 @@
           onkeydown="if(event.key==='Enter')submitScore()"
         />
         <button onclick="submitScore()">Submit</button>
+        <h2>High Scores</h2>
+        <p class="scores-note">Each entry shows the level reached.</p>
+        <ol id="scores-list-gameover" class="scores-list"></ol>
       </div>
     </div>
 
@@ -56,7 +59,7 @@
       <div class="panel">
         <h1>High Scores</h1>
         <p class="scores-note">Each entry shows the level reached.</p>
-        <ol id="scores-list"></ol>
+        <ol id="scores-list" class="scores-list"></ol>
         <button onclick="closeScores()">Close</button>
       </div>
     </div>
