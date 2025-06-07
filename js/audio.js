@@ -9,6 +9,7 @@ try {
 let synth = null;
 let audioReady = false;
 const notes = ["C4", "D4", "E4", "G4", "A4", "B4", "C5"];
+let lastScheduled = 0;
 
 export function initAudio() {
   if (typeof Tone === "undefined") return;
@@ -36,7 +37,10 @@ export function playRandomTone() {
 
 export function playJingle() {
   if (!audioReady || !soundEnabled) return;
-  synth.triggerAttackRelease("C5", "8n");
-  synth.triggerAttackRelease("E5", "8n", "+0.15");
-  synth.triggerAttackRelease("G5", "8n", "+0.3");
+  const now = Tone.now();
+  const start = Math.max(now, lastScheduled + 0.01);
+  synth.triggerAttackRelease("C5", "8n", start);
+  synth.triggerAttackRelease("E5", "8n", start + 0.15);
+  synth.triggerAttackRelease("G5", "8n", start + 0.3);
+  lastScheduled = start + 0.3;
 }
