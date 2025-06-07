@@ -11,6 +11,19 @@ let selectedTile = null,
 let cascadeCount = 1;
 const HIGH_SCORES_KEY = "vibey_high_scores";
 
+// Tone.js setup
+let synth = null;
+const notes = ["C4", "D4", "E4", "G4", "A4", "B4", "C5"];
+if (typeof Tone !== "undefined") {
+  synth = new Tone.Synth().toDestination();
+}
+
+function playRandomTone() {
+  if (!synth) return;
+  const note = notes[Math.floor(Math.random() * notes.length)];
+  synth.triggerAttackRelease(note, "8n");
+}
+
 function getThreshold(lv) {
   const raw = 15 * (lv / 2);
   return Math.ceil(raw / 5) * 5;
@@ -247,6 +260,7 @@ function processMatches() {
 }
 
 function clearMany(cells) {
+  playRandomTone();
   const base = cells.length;
   const bonus = (cascadeCount - 1) * 0.5;
   totalScore += base + bonus;
@@ -379,6 +393,7 @@ function closeScores() {
 
 function startGame() {
   document.getElementById("tutorial-overlay").classList.remove("visible");
+  if (typeof Tone !== "undefined") Tone.start();
   restartGame();
 }
 function restartGame() {

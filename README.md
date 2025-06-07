@@ -16,6 +16,7 @@ Vibe-coded to test AI capabilities.
 - **Tutorial & Game Over Overlays**: First-play guidance and custom end screen with restart.
 - **Smooth Animations**: Tile swaps, falls, shakes, fades, and confetti.
 - **High Scores**: Submit your name after game over and view the top scores via the trophy button.
+- **Random Tones**: Each match plays a random note using Tone.js.
 
 ## Getting Started
 
