@@ -8,6 +8,7 @@ let boardRows = 5,
 let selectedTile = null,
   gameOver = false,
   hintTimeout;
+let dragStart = null;
 let cascadeCount = 1;
 const HIGH_SCORES_KEY = "vibey_high_scores";
 const SOUND_ENABLED_KEY = "vibey_sound_enabled";
@@ -89,7 +90,24 @@ function renderBoard() {
       cell.textContent = board[r][c] || "";
       if (selectedTile && selectedTile.r === r && selectedTile.c === c)
         cell.classList.add("selected");
-      if (!gameOver) cell.onclick = () => handleClick(r, c);
+      if (!gameOver) {
+        cell.onpointerdown = () => {
+          dragStart = { r, c };
+        };
+        cell.onpointerup = () => {
+          if (dragStart) {
+            const { r: sr, c: sc } = dragStart;
+            dragStart = null;
+            handleClick(sr, sc);
+            if (
+              (sr !== r || sc !== c) &&
+              Math.abs(sr - r) + Math.abs(sc - c) === 1
+            ) {
+              handleClick(r, c);
+            }
+          }
+        };
+      }
       game.appendChild(cell);
     }
   }
