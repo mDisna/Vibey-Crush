@@ -10,6 +10,8 @@ let selectedTile = null,
   hintTimeout;
 let dragStart = null;
 let cascadeCount = 1;
+let shuffles = 0;
+let nextShuffleScore = 100;
 const HIGH_SCORES_KEY = "vibey_high_scores";
 const SOUND_ENABLED_KEY = "vibey_sound_enabled";
 let soundEnabled = true;
@@ -29,6 +31,14 @@ function playRandomTone() {
   if (!synth || !soundEnabled) return;
   const note = notes[Math.floor(Math.random() * notes.length)];
   synth.triggerAttackRelease(note, "8n");
+}
+
+function playJingle() {
+  if (!synth || !soundEnabled) return;
+  const jingle = ["C5", "E5", "G5"];
+  jingle.forEach((n, i) => {
+    setTimeout(() => synth.triggerAttackRelease(n, "8n"), i * 150);
+  });
 }
 
 function getThreshold(lv) {
@@ -54,6 +64,7 @@ function updateUI() {
   document.getElementById("remaining").textContent = `Next in: ${Math.ceil(
     rem
   )}`;
+  document.getElementById("shuffles").textContent = `Shuffles: ${shuffles}`;
   const threshold = getThreshold(level);
   const percent = Math.min(100, (levelScore / threshold) * 100);
   const bar = document.querySelector("#progress .bar");
@@ -119,8 +130,17 @@ function renderBoard() {
   if (!gameOver && !findHint()) {
     gameOver = true;
     clearTimeout(hintTimeout);
-    document.getElementById("gameover-overlay").classList.add("visible");
-    document.getElementById("player-name").focus();
+    const overlay = document.getElementById("gameover-overlay");
+    const opt = document.getElementById("shuffle-option");
+    const info = document.getElementById("shuffle-count-text");
+    if (shuffles > 0) {
+      info.textContent = `You have ${shuffles} shuffle(s) left.`;
+      opt.style.display = "block";
+    } else {
+      opt.style.display = "none";
+    }
+    overlay.classList.add("visible");
+    if (shuffles === 0) document.getElementById("player-name").focus();
   }
 }
 
@@ -299,6 +319,11 @@ function clearMany(cells) {
   const bonus = (cascadeCount - 1) * 0.5;
   totalScore += base + bonus;
   levelScore += base + bonus;
+  while (totalScore >= nextShuffleScore) {
+    shuffles++;
+    nextShuffleScore += 100;
+    playJingle();
+  }
   cascadeCount++;
 
   let threshold = getThreshold(level);
@@ -311,6 +336,8 @@ function clearMany(cells) {
     updateBackground();
     threshold = getThreshold(level);
   }
+
+  updateUI();
 
   cells.forEach(([r, c]) =>
     document
@@ -353,6 +380,22 @@ function refillBoard() {
     });
   });
   resetHintTimer();
+}
+
+function shuffleBoard() {
+  for (let attempts = 0; attempts < 50; attempts++) {
+    for (let r = 0; r < boardRows; r++) {
+      for (let c = 0; c < boardCols; c++) {
+        const r2 = Math.floor(Math.random() * boardRows);
+        const c2 = Math.floor(Math.random() * boardCols);
+        [board[r][c], board[r2][c2]] = [board[r2][c2], board[r][c]];
+      }
+    }
+    if (findHint()) break;
+  }
+  renderBoard();
+  resetHintTimer();
+  setTimeout(processMatches, 300);
 }
 
 function launchConfetti() {
@@ -429,6 +472,15 @@ function closeScores() {
   document.getElementById("scores-overlay").classList.remove("visible");
 }
 
+function useShuffle() {
+  if (shuffles <= 0) return;
+  shuffles--;
+  gameOver = false;
+  document.getElementById("gameover-overlay").classList.remove("visible");
+  shuffleBoard();
+  updateUI();
+}
+
 function updateSoundToggle() {
   const btn = document.getElementById("sound-toggle");
   if (btn) btn.textContent = soundEnabled ? "🔊" : "🔇";
@@ -452,6 +504,8 @@ function restartGame() {
   level = 1;
   levelScore = 0;
   totalScore = 0;
+  shuffles = 0;
+  nextShuffleScore = 100;
   boardRows = 5;
   boardCols = 5;
   gameOver = false;

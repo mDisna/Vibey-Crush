@@ -262,3 +262,7 @@ body {
   background: #ffce00;
   transition: width 0.3s ease;
 }
+
+#shuffle-option {
+  margin-bottom: 15px;
+}

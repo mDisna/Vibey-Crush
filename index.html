@@ -11,6 +11,7 @@
       <div id="level">Level: 1</div>
       <div id="score">Score: 0</div>
       <div id="remaining">Next in: 10</div>
+      <div id="shuffles">Shuffles: 0</div>
     </div>
     <div id="progress"><div class="bar"></div></div>
     <div id="game"></div>
@@ -36,6 +37,10 @@
       <div class="panel">
         <h1>Game Over</h1>
         <p>You’ve run out of moves.</p>
+        <div id="shuffle-option" style="display: none">
+          <p id="shuffle-count-text"></p>
+          <button onclick="useShuffle()">Use Shuffle</button>
+        </div>
         <input
           id="player-name"
           type="text"
