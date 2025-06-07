@@ -130,7 +130,7 @@ body {
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.3s ease;
-  z-index: 10;
+  z-index: 20;
 }
 .overlay.visible {
   visibility: visible;
@@ -165,6 +165,34 @@ body {
 }
 .panel button:hover {
   background: #4350b3;
+}
+
+#player-name {
+  padding: 8px 12px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: 2px solid #5563de;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+#scores-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #ffce00;
+  border: none;
+  font-size: 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  z-index: 11;
+}
+
+#scores-btn:hover {
+  background: #e0b700;
 }
 /* Confetti */
 #confetti-container {

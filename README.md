@@ -15,6 +15,7 @@ Vibe-coded to test AI capabilities.
 - **Hint System**: After 10 seconds of inactivity, tiles fade to gold indicating a possible move.
 - **Tutorial & Game Over Overlays**: First-play guidance and custom end screen with restart.
 - **Smooth Animations**: Tile swaps, falls, shakes, fades, and confetti.
+- **High Scores**: Submit your name after game over and view the top scores via the trophy button.
 
 ## Getting Started
 
