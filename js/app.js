@@ -9,6 +9,7 @@ let selectedTile = null,
   gameOver = false,
   hintTimeout;
 let cascadeCount = 1;
+const HIGH_SCORES_KEY = "vibey_high_scores";
 
 function getThreshold(lv) {
   const raw = 15 * (lv / 2);
@@ -72,6 +73,7 @@ function renderBoard() {
     gameOver = true;
     clearTimeout(hintTimeout);
     document.getElementById("gameover-overlay").classList.add("visible");
+    document.getElementById("player-name").focus();
   }
 }
 
@@ -331,6 +333,48 @@ function showHint() {
         el.classList.add("hint");
     });
   }, 50);
+}
+
+function loadHighScores() {
+  try {
+    return JSON.parse(localStorage.getItem(HIGH_SCORES_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveHighScores(scores) {
+  localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(scores));
+}
+
+function addHighScore(name, score) {
+  const scores = loadHighScores();
+  scores.push({ name, score });
+  scores.sort((a, b) => b.score - a.score);
+  if (scores.length > 10) scores.length = 10;
+  saveHighScores(scores);
+}
+
+function submitScore() {
+  const input = document.getElementById("player-name");
+  const name = input.value.trim() || "Anonymous";
+  addHighScore(name, Math.floor(totalScore));
+  input.value = "";
+  restartGame();
+}
+
+function showScores() {
+  const overlay = document.getElementById("scores-overlay");
+  const list = document.getElementById("scores-list");
+  const scores = loadHighScores();
+  list.innerHTML = scores
+    .map((s) => `<li>${s.name}: ${s.score}</li>`)
+    .join("");
+  overlay.classList.add("visible");
+}
+
+function closeScores() {
+  document.getElementById("scores-overlay").classList.remove("visible");
 }
 
 function startGame() {
