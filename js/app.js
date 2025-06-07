@@ -367,9 +367,9 @@ function saveHighScores(scores) {
   localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(scores));
 }
 
-function addHighScore(name, score) {
+function addHighScore(name, score, reachedLevel) {
   const scores = loadHighScores();
-  scores.push({ name, score });
+  scores.push({ name, score, level: reachedLevel });
   scores.sort((a, b) => b.score - a.score);
   if (scores.length > 10) scores.length = 10;
   saveHighScores(scores);
@@ -378,7 +378,7 @@ function addHighScore(name, score) {
 function submitScore() {
   const input = document.getElementById("player-name");
   const name = input.value.trim() || "Anonymous";
-  addHighScore(name, Math.floor(totalScore));
+  addHighScore(name, Math.floor(totalScore), level);
   input.value = "";
   restartGame();
 }
@@ -388,7 +388,10 @@ function showScores() {
   const list = document.getElementById("scores-list");
   const scores = loadHighScores();
   list.innerHTML = scores
-    .map((s) => `<li>${s.name}: ${s.score}</li>`)
+    .map((s) => {
+      const lvl = s.level !== undefined ? s.level : "?";
+      return `<li>${s.name}: ${s.score} (Level ${lvl})</li>`;
+    })
     .join("");
   overlay.classList.add("visible");
 }
