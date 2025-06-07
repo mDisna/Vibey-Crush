@@ -332,6 +332,9 @@ function clearMany(cells) {
   cascadeCount++;
   checkShuffleAward();
 
+  const prevRows = boardRows;
+  const prevCols = boardCols;
+
   let threshold = getThreshold(level);
   while (levelScore >= threshold) {
     levelScore -= threshold;
@@ -343,10 +346,19 @@ function clearMany(cells) {
     threshold = getThreshold(level);
   }
 
+  if (boardCols > prevCols || boardRows > prevRows) {
+    for (let r = 0; r < prevRows; r++)
+      for (let c = prevCols; c < boardCols; c++)
+        board[r][c] = getRandomTile();
+    for (let r = prevRows; r < boardRows; r++) {
+      board[r] = [];
+      for (let c = 0; c < boardCols; c++) board[r][c] = getRandomTile();
+    }
+  }
+
   cells.forEach(([r, c]) =>
     document
-      .querySelectorAll(".tile")
-      [r * boardCols + c]?.classList.add("fading")
+      .querySelectorAll(".tile")[r * prevCols + c]?.classList.add("fading")
   );
   setTimeout(() => {
     cells.forEach(([r, c]) => (board[r][c] = null));
