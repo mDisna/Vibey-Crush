@@ -35,9 +35,26 @@
       <div class="panel">
         <h1>Game Over</h1>
         <p>You’ve run out of moves.</p>
-        <button onclick="restartGame()">Restart</button>
+        <input
+          id="player-name"
+          type="text"
+          placeholder="Enter your name"
+          onkeydown="if(event.key==='Enter')submitScore()"
+        />
+        <button onclick="submitScore()">Submit</button>
       </div>
     </div>
+
+    <!-- High Scores Overlay -->
+    <div id="scores-overlay" class="overlay">
+      <div class="panel">
+        <h1>High Scores</h1>
+        <ol id="scores-list"></ol>
+        <button onclick="closeScores()">Close</button>
+      </div>
+    </div>
+
+    <button id="scores-btn" onclick="showScores()">🏆</button>
 
     <!-- Confetti Container -->
     <div id="confetti-container"></div>
