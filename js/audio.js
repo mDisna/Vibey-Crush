@@ -7,9 +7,13 @@ try {
 
 // Tone.js setup
 let synth = null;
+let audioReady = false;
 const notes = ["C4", "D4", "E4", "G4", "A4", "B4", "C5"];
-if (typeof Tone !== "undefined") {
+
+export function initAudio() {
+  if (typeof Tone === "undefined") return;
   synth = new Tone.Synth().toDestination();
+  audioReady = true;
 }
 
 export function isSoundEnabled() {
@@ -25,13 +29,13 @@ export function toggleSoundEnabled() {
 }
 
 export function playRandomTone() {
-  if (!synth || !soundEnabled) return;
+  if (!audioReady || !soundEnabled) return;
   const note = notes[Math.floor(Math.random() * notes.length)];
   synth.triggerAttackRelease(note, "8n");
 }
 
 export function playJingle() {
-  if (!synth || !soundEnabled) return;
+  if (!audioReady || !soundEnabled) return;
   synth.triggerAttackRelease("C5", "8n");
   setTimeout(() => synth.triggerAttackRelease("E5", "8n"), 150);
   setTimeout(() => synth.triggerAttackRelease("G5", "8n"), 300);

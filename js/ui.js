@@ -1,5 +1,5 @@
 import { Game } from './game.js';
-import { toggleSoundEnabled, isSoundEnabled } from './audio.js';
+import { toggleSoundEnabled, isSoundEnabled, initAudio } from './audio.js';
 import {
   loadHighScores,
   addHighScore,
@@ -195,9 +195,12 @@ function hideShufflePrompt() {
   document.getElementById('shuffle-overlay').classList.remove('visible');
 }
 
-export function startGame() {
+export async function startGame() {
   document.getElementById('tutorial-overlay').classList.remove('visible');
-  if (typeof Tone !== 'undefined') Tone.start();
+  if (typeof Tone !== 'undefined') {
+    await Tone.start();
+  }
+  initAudio();
   restartGame();
 }
 
