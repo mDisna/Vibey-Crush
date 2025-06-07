@@ -11,6 +11,7 @@
       <div id="level">Level: 1</div>
       <div id="score">Score: 0</div>
       <div id="remaining">Next in: 10</div>
+      <div id="shuffles">Shuffles: 0</div>
     </div>
     <div id="progress"><div class="bar"></div></div>
     <div id="game"></div>
@@ -46,6 +47,18 @@
         <h2>High Scores</h2>
         <p class="scores-note">Each entry shows the level reached.</p>
         <ol id="scores-list-gameover" class="scores-list"></ol>
+      </div>
+    </div>
+
+    <!-- Continue Overlay -->
+    <div id="continue-overlay" class="overlay">
+      <div class="panel">
+        <h1>No Moves Left</h1>
+        <p>Use a shuffle to continue?</p>
+        <div class="button-row">
+          <button id="use-shuffle">Use Shuffle</button>
+          <button id="end-game">End Game</button>
+        </div>
       </div>
     </div>
 
