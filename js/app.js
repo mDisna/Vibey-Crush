@@ -139,20 +139,10 @@ function renderBoard() {
   updateUI();
   if (!gameOver && !findHint()) {
     if (shuffles > 0) {
-      const use = confirm(
-        `No moves left! Use a shuffle to continue? (${shuffles} available)`
-      );
-      if (use) {
-        shuffles--;
-        shuffleBoard();
-        return;
-      }
+      showShufflePrompt();
+      return;
     }
-    gameOver = true;
-    clearTimeout(hintTimeout);
-    populateScores(document.getElementById("scores-list-gameover"));
-    document.getElementById("gameover-overlay").classList.add("visible");
-    document.getElementById("player-name").focus();
+    showGameOver();
   }
 }
 
@@ -491,6 +481,27 @@ function toggleSound() {
   } catch {}
 }
 
+function showGameOver() {
+  gameOver = true;
+  clearTimeout(hintTimeout);
+  populateScores(document.getElementById("scores-list-gameover"));
+  document.getElementById("gameover-overlay").classList.add("visible");
+  document.getElementById("player-name").focus();
+}
+
+function showShufflePrompt() {
+  const text = document.getElementById("shuffle-text");
+  if (text)
+    text.textContent = `No moves left! Use a shuffle to continue? (${shuffles} available)`;
+  document.getElementById("shuffle-overlay").classList.add("visible");
+  clearTimeout(hintTimeout);
+  gameOver = true;
+}
+
+function hideShufflePrompt() {
+  document.getElementById("shuffle-overlay").classList.remove("visible");
+}
+
 function startGame() {
   document.getElementById("tutorial-overlay").classList.remove("visible");
   if (typeof Tone !== "undefined") Tone.start();
@@ -498,6 +509,7 @@ function startGame() {
 }
 function restartGame() {
   document.getElementById("gameover-overlay").classList.remove("visible");
+  document.getElementById("shuffle-overlay").classList.remove("visible");
   level = 1;
   levelScore = 0;
   totalScore = 0;
@@ -523,4 +535,14 @@ updateBackground();
 
 updateSoundToggle();
 document.getElementById("sound-toggle").onclick = toggleSound;
+document.getElementById("shuffle-use").onclick = () => {
+  hideShufflePrompt();
+  shuffles--;
+  gameOver = false;
+  shuffleBoard();
+};
+document.getElementById("shuffle-end").onclick = () => {
+  hideShufflePrompt();
+  showGameOver();
+};
 

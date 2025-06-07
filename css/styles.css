@@ -187,6 +187,12 @@ body {
   background: #4350b3;
 }
 
+.actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
 #player-name {
   padding: 8px 12px;
   font-size: 18px;
