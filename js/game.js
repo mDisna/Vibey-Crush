@@ -177,6 +177,7 @@ export class Game {
           [sr, sc],
           [r, c],
         ]);
+        return; // avoid clearing shake animation
       }
     } else {
       this.selectedTile = { r, c };
