@@ -10,7 +10,9 @@ export function loadHighScores() {
 }
 
 export function saveHighScores(scores) {
-  localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(scores));
+  try {
+    localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(scores));
+  } catch {}
 }
 
 export function addHighScore(name, score, reachedLevel) {
