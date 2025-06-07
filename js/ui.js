@@ -9,6 +9,7 @@ import {
 
 const game = new Game();
 let dragStart = null;
+const boardEl = document.getElementById('game');
 
 function updateBackground() {
   const hue = (game.level * 40) % 360;
@@ -30,33 +31,37 @@ function updateUI() {
 }
 
 function renderBoard() {
-  const g = document.getElementById('game');
+  const g = boardEl;
   g.style.gridTemplateColumns = `repeat(${game.boardCols},60px)`;
   g.style.gridTemplateRows = `repeat(${game.boardRows},60px)`;
-  g.innerHTML = '';
+
+  if (g.childElementCount !== game.boardRows * game.boardCols) {
+    g.innerHTML = '';
+    for (let r = 0; r < game.boardRows; r++) {
+      for (let c = 0; c < game.boardCols; c++) {
+        const cell = document.createElement('div');
+        cell.className = 'tile';
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        g.appendChild(cell);
+      }
+    }
+  }
+
+  const cells = g.children;
   for (let r = 0; r < game.boardRows; r++) {
     for (let c = 0; c < game.boardCols; c++) {
-      const cell = document.createElement('div');
-      cell.className = 'tile';
+      const cell = cells[r * game.boardCols + c];
+      if (!cell) continue;
       cell.textContent = game.board[r][c] || '';
-      if (game.selectedTile && game.selectedTile.r === r && game.selectedTile.c === c)
-        cell.classList.add('selected');
-      if (!game.gameOver) {
-        cell.onpointerdown = () => {
-          dragStart = { r, c };
-        };
-        cell.onpointerup = () => {
-          if (dragStart) {
-            const { r: sr, c: sc } = dragStart;
-            dragStart = null;
-            handleClick(sr, sc);
-            if ((sr !== r || sc !== c) && Math.abs(sr - r) + Math.abs(sc - c) === 1) {
-              handleClick(r, c);
-            }
-          }
-        };
-      }
-      g.appendChild(cell);
+      cell.classList.toggle(
+        'selected',
+        !!(
+          game.selectedTile &&
+          game.selectedTile.r === r &&
+          game.selectedTile.c === c
+        )
+      );
     }
   }
   updateUI();
@@ -88,6 +93,27 @@ function handleClick(r, c) {
         resetHint
       )
   );
+}
+
+function onBoardPointerDown(e) {
+  if (game.gameOver) return;
+  const tile = e.target.closest('.tile');
+  if (!tile) return;
+  dragStart = { r: Number(tile.dataset.row), c: Number(tile.dataset.col) };
+}
+
+function onBoardPointerUp(e) {
+  if (!dragStart) return;
+  const tile = e.target.closest('.tile');
+  const { r: sr, c: sc } = dragStart;
+  dragStart = null;
+  if (!tile) return;
+  const r = Number(tile.dataset.row);
+  const c = Number(tile.dataset.col);
+  handleClick(sr, sc);
+  if ((sr !== r || sc !== c) && Math.abs(sr - r) + Math.abs(sc - c) === 1) {
+    handleClick(r, c);
+  }
 }
 
 function populateScores(listEl, limit = DISPLAY_HIGH_SCORE_COUNT) {
@@ -204,6 +230,9 @@ document.getElementById('shuffle-end').onclick = () => {
   hideShufflePrompt();
   showGameOver();
 };
+
+boardEl.addEventListener('pointerdown', onBoardPointerDown);
+boardEl.addEventListener('pointerup', onBoardPointerUp);
 
 // Initial setup
 game.resetGame();
