@@ -81,6 +81,18 @@ function resetHint() {
   game.resetHintTimer(() => game.showHint(renderBoard));
 }
 
+function shakeTiles(cells) {
+  const tiles = document.querySelectorAll('.tile');
+  cells.forEach(([r, c]) => {
+    const el = tiles[r * game.boardCols + c];
+    if (!el) return;
+    el.classList.add('shake');
+    el.addEventListener('animationend', () => el.classList.remove('shake'), {
+      once: true,
+    });
+  });
+}
+
 function handleClick(r, c) {
   game.handleClick(
     r,
@@ -94,7 +106,8 @@ function handleClick(r, c) {
         game.launchConfetti.bind(game),
         updateBackground,
         resetHint
-      )
+      ),
+    shakeTiles
   );
 }
 
