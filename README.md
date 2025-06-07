@@ -44,3 +44,7 @@ Use `npm test` to run the Node-based unit tests:
 npm test
 ```
 
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
