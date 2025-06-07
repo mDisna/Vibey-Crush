@@ -198,17 +198,19 @@ body {
   background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
 }
 
+
 .help-list {
   list-style: none;
   padding: 0;
   margin: 20px 0;
-  text-align: left;
+  text-align: center;
 }
 
 .help-list li {
   margin-bottom: 12px;
   font-size: 18px;
   line-height: 1.4;
+  text-align: center;
 }
 
 .actions {
