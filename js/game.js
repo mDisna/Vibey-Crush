@@ -277,7 +277,7 @@ export class Game {
   }
 
   refillBoard(updateUI, renderBoard, resetHintTimer) {
-    const fall = [];
+    const fallMap = {};
     for (let c = 0; c < this.boardCols; c++) {
       let empty = 0;
       for (let r = this.boardRows - 1; r >= 0; r--) {
@@ -285,21 +285,22 @@ export class Game {
         else if (empty > 0) {
           this.board[r + empty][c] = this.board[r][c];
           this.board[r][c] = null;
-          fall.push({ from: r, to: r + empty, c });
+          fallMap[`${r + empty},${c}`] = empty;
         }
       }
       for (let r = 0; r < empty; r++) {
         this.board[r][c] = this.getRandomTile();
-        fall.push({ from: -1 - r, to: r, c });
+        fallMap[`${r},${c}`] = r - (-1 - r);
       }
     }
     renderBoard();
     requestAnimationFrame(() => {
-      document.querySelectorAll('.tile').forEach((el, i) => {
-        const f = fall[i];
-        if (!f) return;
-        const dist = (f.to - f.from) * 64;
-        el.style.transform = `translateY(-${dist}px)`;
+      document.querySelectorAll('.tile').forEach((el) => {
+        const r = Number(el.dataset.row);
+        const c = Number(el.dataset.col);
+        const dist = fallMap[`${r},${c}`];
+        if (!dist) return;
+        el.style.transform = `translateY(-${dist * 64}px)`;
         el.classList.add('falling');
         setTimeout(() => (el.style.transform = ''), 20);
       });
