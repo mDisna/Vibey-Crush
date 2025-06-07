@@ -31,12 +31,14 @@ export function toggleSoundEnabled() {
 export function playRandomTone() {
   if (!audioReady || !soundEnabled) return;
   const note = notes[Math.floor(Math.random() * notes.length)];
-  synth.triggerAttackRelease(note, "8n");
+  const now = Tone.now();
+  synth.triggerAttackRelease(note, "8n", now);
 }
 
 export function playJingle() {
   if (!audioReady || !soundEnabled) return;
-  synth.triggerAttackRelease("C5", "8n");
-  setTimeout(() => synth.triggerAttackRelease("E5", "8n"), 150);
-  setTimeout(() => synth.triggerAttackRelease("G5", "8n"), 300);
+  const now = Tone.now();
+  synth.triggerAttackRelease("C5", "8n", now);
+  synth.triggerAttackRelease("E5", "8n", now + 0.15);
+  synth.triggerAttackRelease("G5", "8n", now + 0.3);
 }
