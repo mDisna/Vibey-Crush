@@ -10,6 +10,8 @@ let selectedTile = null,
   hintTimeout;
 let dragStart = null;
 let cascadeCount = 1;
+let shuffles = 0;
+let shufflesEarned = 0;
 const HIGH_SCORES_KEY = "vibey_high_scores";
 const SOUND_ENABLED_KEY = "vibey_sound_enabled";
 let soundEnabled = true;
@@ -29,6 +31,23 @@ function playRandomTone() {
   if (!synth || !soundEnabled) return;
   const note = notes[Math.floor(Math.random() * notes.length)];
   synth.triggerAttackRelease(note, "8n");
+}
+
+function playJingle() {
+  if (!synth || !soundEnabled) return;
+  synth.triggerAttackRelease("C5", "8n");
+  setTimeout(() => synth.triggerAttackRelease("E5", "8n"), 150);
+  setTimeout(() => synth.triggerAttackRelease("G5", "8n"), 300);
+}
+
+function checkShuffleAward() {
+  const earned = Math.floor(totalScore / 100);
+  if (earned > shufflesEarned) {
+    shuffles += earned - shufflesEarned;
+    shufflesEarned = earned;
+    playJingle();
+    updateUI();
+  }
 }
 
 function getThreshold(lv) {
@@ -58,6 +77,8 @@ function updateUI() {
   const percent = Math.min(100, (levelScore / threshold) * 100);
   const bar = document.querySelector("#progress .bar");
   if (bar) bar.style.width = `${percent}%`;
+  const shufEl = document.getElementById("shuffles");
+  if (shufEl) shufEl.textContent = `Shuffles: ${shuffles}`;
 }
 
 function generateBoard() {
@@ -117,6 +138,16 @@ function renderBoard() {
   }
   updateUI();
   if (!gameOver && !findHint()) {
+    if (shuffles > 0) {
+      const use = confirm(
+        `No moves left! Use a shuffle to continue? (${shuffles} available)`
+      );
+      if (use) {
+        shuffles--;
+        shuffleBoard();
+        return;
+      }
+    }
     gameOver = true;
     clearTimeout(hintTimeout);
     populateScores(document.getElementById("scores-list-gameover"));
@@ -301,6 +332,7 @@ function clearMany(cells) {
   totalScore += base + bonus;
   levelScore += base + bonus;
   cascadeCount++;
+  checkShuffleAward();
 
   let threshold = getThreshold(level);
   while (levelScore >= threshold) {
@@ -354,6 +386,17 @@ function refillBoard() {
     });
   });
   resetHintTimer();
+}
+
+function shuffleBoard() {
+  let attempts = 0;
+  do {
+    board = generateBoard();
+    attempts++;
+  } while (!findHint() && attempts < 10);
+  renderBoard();
+  resetHintTimer();
+  setTimeout(processMatches, 300);
 }
 
 function launchConfetti() {
@@ -462,6 +505,8 @@ function restartGame() {
   boardCols = 5;
   gameOver = false;
   cascadeCount = 1;
+  shuffles = 0;
+  shufflesEarned = 0;
   updateBackground();
   board = generateBoard();
   renderBoard();
