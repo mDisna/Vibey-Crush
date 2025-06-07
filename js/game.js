@@ -2,6 +2,54 @@ import { playRandomTone, playJingle } from './audio.js';
 
 export const tileTypes = ["💎", "🔶", "🔷", "🔴", "🟢", "🟣"];
 
+export function findRuns(board, length) {
+  const rows = board.length;
+  const cols = board[0]?.length || 0;
+  const runs = [];
+
+  for (let r = 0; r < rows; r++) {
+    let run = 1;
+    for (let c = 1; c <= cols; c++) {
+      if (
+        c < cols &&
+        board[r][c] === board[r][c - 1] &&
+        board[r][c] !== null
+      ) {
+        run++;
+      } else {
+        if (run >= length) {
+          const cells = [];
+          for (let i = 0; i < run; i++) cells.push([r, c - run + i]);
+          runs.push(cells);
+        }
+        run = 1;
+      }
+    }
+  }
+
+  for (let c = 0; c < cols; c++) {
+    let run = 1;
+    for (let r = 1; r <= rows; r++) {
+      if (
+        r < rows &&
+        board[r][c] === board[r - 1][c] &&
+        board[r][c] !== null
+      ) {
+        run++;
+      } else {
+        if (run >= length) {
+          const cells = [];
+          for (let i = 0; i < run; i++) cells.push([r - run + i, c]);
+          runs.push(cells);
+        }
+        run = 1;
+      }
+    }
+  }
+
+  return runs;
+}
+
 export class Game {
   constructor() {
     this.level = 1;
@@ -147,103 +195,39 @@ export class Game {
   }
 
   processMatches(updateUI, renderBoard, launchConfetti, updateBackground, resetHintTimer) {
-    for (let r = 0; r < this.boardRows; r++) {
-      let run = 1;
-      for (let c = 1; c <= this.boardCols; c++) {
-        if (
-          c < this.boardCols &&
-          this.board[r][c] === this.board[r][c - 1] &&
-          this.board[r][c] !== null
-        ) {
-          run++;
-        } else if (run >= 5) {
-          this.clearMany(
-            Array.from({ length: this.boardRows }, (_, rr) =>
-              Array.from({ length: this.boardCols }, (_, cc) => [rr, cc])
-            ).flat(),
-            updateUI,
-            renderBoard,
-            launchConfetti,
-            updateBackground,
-            resetHintTimer
-          );
-          return;
-        } else {
-          run = 1;
-        }
-      }
-    }
-    for (let c = 0; c < this.boardCols; c++) {
-      let run = 1;
-      for (let r = 1; r <= this.boardRows; r++) {
-        if (
-          r < this.boardRows &&
-          this.board[r][c] === this.board[r - 1][c] &&
-          this.board[r][c] !== null
-        ) {
-          run++;
-        } else if (run >= 5) {
-          this.clearMany(
-            Array.from({ length: this.boardRows }, (_, rr) =>
-              Array.from({ length: this.boardCols }, (_, cc) => [rr, cc])
-            ).flat(),
-            updateUI,
-            renderBoard,
-            launchConfetti,
-            updateBackground,
-            resetHintTimer
-          );
-          return;
-        } else {
-          run = 1;
-        }
-      }
+    const allCells = Array.from({ length: this.boardRows }, (_, r) =>
+      Array.from({ length: this.boardCols }, (_, c) => [r, c])
+    ).flat();
+
+    const fives = findRuns(this.board, 5);
+    if (fives.length) {
+      this.clearMany(allCells, updateUI, renderBoard, launchConfetti, updateBackground, resetHintTimer);
+      return;
     }
 
-    let toClear = [];
-    for (let r = 0; r < this.boardRows; r++) {
-      let run = 1;
-      for (let c = 1; c <= this.boardCols; c++) {
-        if (
-          c < this.boardCols &&
-          this.board[r][c] === this.board[r][c - 1] &&
-          this.board[r][c] !== null
-        ) {
-          run++;
-        } else if (run === 4) {
-          for (let i = 0; i < this.boardCols; i++) toClear.push([r, i]);
-          run = 1;
-        } else {
-          run = 1;
-        }
-      }
-    }
-    for (let c = 0; c < this.boardCols; c++) {
-      let run = 1;
-      for (let r = 1; r <= this.boardRows; r++) {
-        if (
-          r < this.boardRows &&
-          this.board[r][c] === this.board[r - 1][c] &&
-          this.board[r][c] !== null
-        ) {
-          run++;
-        } else if (run === 4) {
-          for (let i = 0; i < this.boardRows; i++) toClear.push([i, c]);
-          run = 1;
-        } else {
-          run = 1;
-        }
-      }
-    }
-    if (toClear.length) {
+    const fours = findRuns(this.board, 4);
+    if (fours.length) {
+      let toClear = [];
+      fours.forEach((run) => {
+        const horizontal = run.every(([r]) => r === run[0][0]);
+        if (horizontal) for (let i = 0; i < this.boardCols; i++) toClear.push([run[0][0], i]);
+        else for (let i = 0; i < this.boardRows; i++) toClear.push([i, run[0][1]]);
+      });
+      toClear = Array.from(new Set(toClear.map(JSON.stringify)), JSON.parse);
       this.clearMany(toClear, updateUI, renderBoard, launchConfetti, updateBackground, resetHintTimer);
       return;
     }
-    const triples = this.findAllMatches();
+
+    const triples = findRuns(this.board, 3);
     if (triples.length) {
-      this.clearMany(triples, updateUI, renderBoard, launchConfetti, updateBackground, resetHintTimer);
+      const cells = Array.from(
+        new Set(triples.flat().map(JSON.stringify)),
+        JSON.parse
+      );
+      this.clearMany(cells, updateUI, renderBoard, launchConfetti, updateBackground, resetHintTimer);
       return;
     }
+
     renderBoard();
   }
 
