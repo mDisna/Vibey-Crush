@@ -4,6 +4,8 @@ A vibrant, emoji-based match-3 browser game built with HTML, CSS, and JavaScript
 
 Vibe-coded to test AI capabilities.
 
+[Click here to play the game here](https://github.com/mDisna/Vibey-Crush/deployments/github-pages)
+
 ## Features
 
 - **Dynamic Board**: Grid size grows every 5 levels.
