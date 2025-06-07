@@ -193,6 +193,24 @@ body {
   margin-bottom: 8px;
 }
 
+.help-panel {
+  max-width: 500px;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+}
+
+.help-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.help-list li {
+  margin-bottom: 12px;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
 .actions {
   display: flex;
   gap: 15px;
