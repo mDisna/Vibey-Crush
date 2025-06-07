@@ -1,73 +1,47 @@
-import {
-  level,
-  levelScore,
-  totalScore,
-  boardRows,
-  boardCols,
-  board,
-  selectedTile,
-  gameOver,
-  hintTimeout,
-  shuffles,
-  handleClick as gameHandleClick,
-  processMatches,
-  findHint,
-  launchConfetti,
-  shuffleBoard,
-  resetHintTimer as gameResetHintTimer,
-  showHint as gameShowHint,
-  resetGame
-} from './game.js';
-import {
-  toggleSoundEnabled,
-  isSoundEnabled
-} from './audio.js';
+import { Game } from './game.js';
+import { toggleSoundEnabled, isSoundEnabled } from './audio.js';
 import {
   loadHighScores,
   addHighScore,
   qualifiesForHighScore,
-  DISPLAY_HIGH_SCORE_COUNT
+  DISPLAY_HIGH_SCORE_COUNT,
 } from './scores.js';
 
+const game = new Game();
 let dragStart = null;
 
 function updateBackground() {
-  const hue = (level * 40) % 360;
+  const hue = (game.level * 40) % 360;
   const nextHue = (hue + 60) % 360;
   document.body.style.background = `linear-gradient(135deg, hsl(${hue},70%,70%), hsl(${nextHue},70%,60%))`;
 }
 
-function getThreshold(lv) {
-  const raw = 15 * (lv / 2);
-  return Math.ceil(raw / 5) * 5;
-}
-
 function updateUI() {
-  document.getElementById('level').textContent = `Level: ${level}`;
-  document.getElementById('score').textContent = `Score: ${Math.floor(totalScore)}`;
-  const rem = Math.max(0, getThreshold(level) - levelScore);
+  document.getElementById('level').textContent = `Level: ${game.level}`;
+  document.getElementById('score').textContent = `Score: ${Math.floor(game.totalScore)}`;
+  const rem = Math.max(0, game.getThreshold() - game.levelScore);
   document.getElementById('remaining').textContent = `Next in: ${Math.ceil(rem)}`;
-  const threshold = getThreshold(level);
-  const percent = Math.min(100, (levelScore / threshold) * 100);
+  const threshold = game.getThreshold();
+  const percent = Math.min(100, (game.levelScore / threshold) * 100);
   const bar = document.querySelector('#progress .bar');
   if (bar) bar.style.width = `${percent}%`;
   const shufEl = document.getElementById('shuffles');
-  if (shufEl) shufEl.textContent = `Shuffles: ${shuffles}`;
+  if (shufEl) shufEl.textContent = `Shuffles: ${game.shuffles}`;
 }
 
 function renderBoard() {
-  const game = document.getElementById('game');
-  game.style.gridTemplateColumns = `repeat(${boardCols},60px)`;
-  game.style.gridTemplateRows = `repeat(${boardRows},60px)`;
-  game.innerHTML = '';
-  for (let r = 0; r < boardRows; r++) {
-    for (let c = 0; c < boardCols; c++) {
+  const g = document.getElementById('game');
+  g.style.gridTemplateColumns = `repeat(${game.boardCols},60px)`;
+  g.style.gridTemplateRows = `repeat(${game.boardRows},60px)`;
+  g.innerHTML = '';
+  for (let r = 0; r < game.boardRows; r++) {
+    for (let c = 0; c < game.boardCols; c++) {
       const cell = document.createElement('div');
       cell.className = 'tile';
-      cell.textContent = board[r][c] || '';
-      if (selectedTile && selectedTile.r === r && selectedTile.c === c)
+      cell.textContent = game.board[r][c] || '';
+      if (game.selectedTile && game.selectedTile.r === r && game.selectedTile.c === c)
         cell.classList.add('selected');
-      if (!gameOver) {
+      if (!game.gameOver) {
         cell.onpointerdown = () => {
           dragStart = { r, c };
         };
@@ -82,12 +56,12 @@ function renderBoard() {
           }
         };
       }
-      game.appendChild(cell);
+      g.appendChild(cell);
     }
   }
   updateUI();
-  if (!gameOver && !findHint()) {
-    if (shuffles > 0) {
+  if (!game.gameOver && !game.findHint()) {
+    if (game.shuffles > 0) {
       showShufflePrompt();
       return;
     }
@@ -96,16 +70,23 @@ function renderBoard() {
 }
 
 function resetHint() {
-  gameResetHintTimer(() => gameShowHint(renderBoard));
+  game.resetHintTimer(() => game.showHint(renderBoard));
 }
 
 function handleClick(r, c) {
-  gameHandleClick(
+  game.handleClick(
     r,
     c,
     renderBoard,
     resetHint,
-    () => processMatches(updateUI, renderBoard, launchConfetti, updateBackground, resetHint)
+    () =>
+      game.processMatches(
+        updateUI,
+        renderBoard,
+        game.launchConfetti.bind(game),
+        updateBackground,
+        resetHint
+      )
   );
 }
 
@@ -123,7 +104,7 @@ function populateScores(listEl, limit = DISPLAY_HIGH_SCORE_COUNT) {
 function submitScore() {
   const input = document.getElementById('player-name');
   const name = input.value.trim() || 'Anonymous';
-  addHighScore(name, Math.floor(totalScore), level);
+  addHighScore(name, Math.floor(game.totalScore), game.level);
   input.value = '';
   restartGame();
   showScores();
@@ -151,9 +132,9 @@ function toggleSound() {
 }
 
 function showGameOver() {
-  gameOver = true;
-  clearTimeout(hintTimeout);
-  const scoreVal = Math.floor(totalScore);
+  game.gameOver = true;
+  clearTimeout(game.hintTimeout);
+  const scoreVal = Math.floor(game.totalScore);
   const qualifies = qualifiesForHighScore(scoreVal);
   if (qualifies) {
     populateScores(
@@ -175,10 +156,10 @@ function showGameOver() {
 function showShufflePrompt() {
   const text = document.getElementById('shuffle-text');
   if (text)
-    text.textContent = `No moves left! Use a shuffle to continue? (${shuffles} available)`;
+    text.textContent = `No moves left! Use a shuffle to continue? (${game.shuffles} available)`;
   document.getElementById('shuffle-overlay').classList.add('visible');
-  clearTimeout(hintTimeout);
-  gameOver = true;
+  clearTimeout(game.hintTimeout);
+  game.gameOver = true;
 }
 
 function hideShufflePrompt() {
@@ -194,20 +175,30 @@ export function startGame() {
 export function restartGame() {
   document.getElementById('gameover-overlay').classList.remove('visible');
   document.getElementById('shuffle-overlay').classList.remove('visible');
-  resetGame();
+  game.resetGame();
   updateBackground();
   renderBoard();
   resetHint();
-  setTimeout(() => processMatches(updateUI, renderBoard, launchConfetti, updateBackground, resetHint), 300);
+  setTimeout(
+    () =>
+      game.processMatches(
+        updateUI,
+        renderBoard,
+        game.launchConfetti.bind(game),
+        updateBackground,
+        resetHint
+      ),
+    300
+  );
 }
 
 updateSoundToggle();
 document.getElementById('sound-toggle').onclick = toggleSound;
 document.getElementById('shuffle-use').onclick = () => {
   hideShufflePrompt();
-  shuffles--;
-  gameOver = false;
-  shuffleBoard(updateUI, renderBoard, resetHint);
+  game.shuffles--;
+  game.gameOver = false;
+  game.shuffleBoard(updateUI, renderBoard, resetHint, updateBackground);
 };
 document.getElementById('shuffle-end').onclick = () => {
   hideShufflePrompt();
@@ -215,10 +206,20 @@ document.getElementById('shuffle-end').onclick = () => {
 };
 
 // Initial setup
-resetGame();
+game.resetGame();
 renderBoard();
 resetHint();
-setTimeout(() => processMatches(updateUI, renderBoard, launchConfetti, updateBackground, resetHint), 300);
+setTimeout(
+  () =>
+    game.processMatches(
+      updateUI,
+      renderBoard,
+      game.launchConfetti.bind(game),
+      updateBackground,
+      resetHint
+    ),
+  300
+);
 updateBackground();
 
 // Expose for HTML inline handlers
