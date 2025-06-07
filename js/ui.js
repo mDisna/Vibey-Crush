@@ -163,6 +163,14 @@ function closeScores() {
   document.getElementById('scores-overlay').classList.remove('visible');
 }
 
+function showHelp() {
+  document.getElementById('help-overlay').classList.add('visible');
+}
+
+function closeHelp() {
+  document.getElementById('help-overlay').classList.remove('visible');
+}
+
 function updateSoundToggle() {
   const btn = document.getElementById('sound-toggle');
   if (btn) btn.textContent = isSoundEnabled() ? '🔊' : '🔇';
@@ -275,3 +283,5 @@ window.startGame = startGame;
 window.submitScore = submitScore;
 window.showScores = showScores;
 window.closeScores = closeScores;
+window.showHelp = showHelp;
+window.closeHelp = closeHelp;

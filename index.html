@@ -74,8 +74,34 @@
       </div>
     </div>
 
+    <!-- Help Overlay -->
+    <div id="help-overlay" class="overlay">
+      <div class="panel">
+        <h1>How to Play</h1>
+        <p>Swap adjacent tiles to match 3 or more identical emojis.</p>
+        <p><span class="example">🔴🔴🔴</span> — matching 3 clears those tiles.</p>
+        <p><span class="example">🟢🟢🟢🟢</span> — matching 4 clears a row or column.</p>
+        <p><span class="example">🟣🟣🟣🟣🟣</span> — matching 5 clears the entire board.</p>
+        <p>
+          This game was Vibe-Coded using ChatGPT o4-mini-high and OpenAI Codex
+          by
+          <a href="https://www.linkedin.com/in/mdisna/" target="_blank" rel="noopener"
+            >Matthieu Disna</a
+          >.
+        </p>
+        <p>
+          View or download the code from
+          <a href="https://github.com/mDisna/Vibey-Crush" target="_blank" rel="noopener"
+            >GitHub</a
+          >.
+        </p>
+        <button onclick="closeHelp()">Close</button>
+      </div>
+    </div>
+
     <button id="scores-btn" onclick="showScores()">🏆</button>
     <button id="sound-toggle">🔊</button>
+    <button id="help-btn" onclick="showHelp()">❓</button>
 
     <!-- Confetti Container -->
     <div id="confetti-container"></div>
