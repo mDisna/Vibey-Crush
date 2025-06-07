@@ -49,6 +49,9 @@ function renderBoard() {
   }
 
   const cells = g.children;
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].classList.remove('fading', 'falling', 'hint', 'shake');
+  }
   for (let r = 0; r < game.boardRows; r++) {
     for (let c = 0; c < game.boardCols; c++) {
       const cell = cells[r * game.boardCols + c];
