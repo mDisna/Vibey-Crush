@@ -292,7 +292,7 @@ export class Game {
       }
       for (let r = 0; r < empty; r++) {
         this.board[r][c] = this.getRandomTile();
-        fallMap[`${r},${c}`] = r - (-1 - r);
+        fallMap[`${r},${c}`] = empty - r;
       }
     }
     renderBoard();
