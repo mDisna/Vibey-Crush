@@ -119,6 +119,7 @@ function renderBoard() {
   if (!gameOver && !findHint()) {
     gameOver = true;
     clearTimeout(hintTimeout);
+    populateScores(document.getElementById("scores-list-gameover"));
     document.getElementById("gameover-overlay").classList.add("visible");
     document.getElementById("player-name").focus();
   }
@@ -404,24 +405,29 @@ function addHighScore(name, score, reachedLevel) {
   saveHighScores(scores);
 }
 
+function populateScores(listEl) {
+  const scores = loadHighScores();
+  listEl.innerHTML = scores
+    .map((s) => {
+      const lvl = s.level !== undefined ? s.level : "?";
+      return `<li>${s.name}: ${s.score} (Level ${lvl})</li>`;
+    })
+    .join("");
+}
+
 function submitScore() {
   const input = document.getElementById("player-name");
   const name = input.value.trim() || "Anonymous";
   addHighScore(name, Math.floor(totalScore), level);
   input.value = "";
   restartGame();
+  showScores();
 }
 
 function showScores() {
   const overlay = document.getElementById("scores-overlay");
   const list = document.getElementById("scores-list");
-  const scores = loadHighScores();
-  list.innerHTML = scores
-    .map((s) => {
-      const lvl = s.level !== undefined ? s.level : "?";
-      return `<li>${s.name}: ${s.score} (Level ${lvl})</li>`;
-    })
-    .join("");
+  populateScores(list);
   overlay.classList.add("visible");
 }
 
