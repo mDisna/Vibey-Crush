@@ -248,7 +248,11 @@ function processMatches() {
       ) {
         run++;
       } else if (run >= 5) {
-        clearMany(Array.from({ length: boardCols }, (_, i) => [r, i]));
+        clearMany(
+          Array.from({ length: boardRows }, (_, rr) =>
+            Array.from({ length: boardCols }, (_, cc) => [rr, cc])
+          ).flat()
+        );
         return;
       } else {
         run = 1;
@@ -266,7 +270,11 @@ function processMatches() {
       ) {
         run++;
       } else if (run >= 5) {
-        clearMany(Array.from({ length: boardRows }, (_, i) => [i, c]));
+        clearMany(
+          Array.from({ length: boardRows }, (_, rr) =>
+            Array.from({ length: boardCols }, (_, cc) => [rr, cc])
+          ).flat()
+        );
         return;
       } else {
         run = 1;

@@ -10,7 +10,7 @@ Vibe-coded to test AI capabilities.
 - **Cascade Bonuses**: Earn 0.5 bonus points per consecutive cascade.
 - **Special Clears**:
   - Match 4 to clear an entire row or column.
-  - Match 5 or more to clear all tiles in that row or column.
+  - Match 5 or more to clear every tile on the board.
 - **Level Progression**: Reach a threshold to level up, unlocking extra rows/columns and a confetti celebration.
 - **Colourful Level Transitions**: Each new level smoothly changes the page background colour.
 - **Hint System**: After 10 seconds of inactivity, tiles fade to gold indicating a possible move.
