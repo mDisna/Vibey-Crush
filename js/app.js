@@ -448,12 +448,13 @@ function addHighScore(name, score, reachedLevel) {
 
 function populateScores(listEl) {
   const scores = loadHighScores();
-  listEl.innerHTML = scores
-    .map((s) => {
-      const lvl = s.level !== undefined ? s.level : "?";
-      return `<li>${s.name}: ${s.score} (Level ${lvl})</li>`;
-    })
-    .join("");
+  listEl.innerHTML = "";
+  scores.forEach((s) => {
+    const lvl = s.level !== undefined ? s.level : "?";
+    const li = document.createElement("li");
+    li.textContent = `${s.name}: ${s.score} (Level ${lvl})`;
+    listEl.appendChild(li);
+  });
 }
 
 function submitScore() {
