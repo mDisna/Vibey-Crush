@@ -10,6 +10,12 @@ let selectedTile = null,
   hintTimeout;
 let cascadeCount = 1;
 const HIGH_SCORES_KEY = "vibey_high_scores";
+const SOUND_ENABLED_KEY = "vibey_sound_enabled";
+let soundEnabled = true;
+try {
+  const saved = localStorage.getItem(SOUND_ENABLED_KEY);
+  if (saved !== null) soundEnabled = saved === "true";
+} catch {}
 
 // Tone.js setup
 let synth = null;
@@ -19,7 +25,7 @@ if (typeof Tone !== "undefined") {
 }
 
 function playRandomTone() {
-  if (!synth) return;
+  if (!synth || !soundEnabled) return;
   const note = notes[Math.floor(Math.random() * notes.length)];
   synth.triggerAttackRelease(note, "8n");
 }
@@ -391,6 +397,19 @@ function closeScores() {
   document.getElementById("scores-overlay").classList.remove("visible");
 }
 
+function updateSoundToggle() {
+  const btn = document.getElementById("sound-toggle");
+  if (btn) btn.textContent = soundEnabled ? "🔊" : "🔇";
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  updateSoundToggle();
+  try {
+    localStorage.setItem(SOUND_ENABLED_KEY, soundEnabled);
+  } catch {}
+}
+
 function startGame() {
   document.getElementById("tutorial-overlay").classList.remove("visible");
   if (typeof Tone !== "undefined") Tone.start();
@@ -416,3 +435,7 @@ board = generateBoard();
 renderBoard();
 resetHintTimer();
 setTimeout(processMatches, 300);
+
+updateSoundToggle();
+document.getElementById("sound-toggle").onclick = toggleSound;
+

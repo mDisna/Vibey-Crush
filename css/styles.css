@@ -194,6 +194,25 @@ body {
 #scores-btn:hover {
   background: #e0b700;
 }
+
+#sound-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 90px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #ffce00;
+  border: none;
+  font-size: 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  z-index: 11;
+}
+
+#sound-toggle:hover {
+  background: #e0b700;
+}
 /* Confetti */
 #confetti-container {
   position: fixed;
