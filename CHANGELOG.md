@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2025-06-08 14:33 ET
+### Added
+- Lock tiles are limited to 7% of the board.
+
 ## [1.2.0] - 2025-06-08
 ### Added
 - Lock tiles can no longer be selected or swapped by the player.
