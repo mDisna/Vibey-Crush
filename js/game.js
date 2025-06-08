@@ -92,7 +92,11 @@ export class Game {
   }
 
   getAddedTile() {
-    if (this.level >= 30 && this.random() < 0.1) return lockTile;
+    if (this.level >= 30 && this.random() < 0.1) {
+      const total = this.boardRows * this.boardCols;
+      const locks = this.board.flat().filter(t => t === lockTile).length;
+      if (locks / total < 0.07) return lockTile;
+    }
     return this.getRandomTile();
   }
 
