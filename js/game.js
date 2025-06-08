@@ -51,13 +51,24 @@ export function findRuns(board, length) {
 }
 
 export class Game {
+  static boardSizeForLevel(lv) {
+    let rows = 5;
+    let cols = 5;
+    for (let i = 2; i <= lv; i++) {
+      if (i % 5 === 0) cols = Math.min(cols + 1, 20);
+      if (i % 10 === 0) rows = Math.min(rows + 1, 15);
+    }
+    return { rows, cols };
+  }
+
   constructor(options = {}) {
     this.random = options.random || Math.random;
-    this.level = 1;
+    this.level = options.level || 1;
     this.levelScore = 0;
     this.totalScore = 0;
-    this.boardRows = 5;
-    this.boardCols = 5;
+    const size = Game.boardSizeForLevel(this.level);
+    this.boardRows = size.rows;
+    this.boardCols = size.cols;
     this.board = [];
     this.selectedTile = null;
     this.gameOver = false;
@@ -361,12 +372,13 @@ export class Game {
     }, 50);
   }
 
-  resetGame() {
-    this.level = 1;
+  resetGame(level = 1) {
+    this.level = level;
     this.levelScore = 0;
     this.totalScore = 0;
-    this.boardRows = 5;
-    this.boardCols = 5;
+    const size = Game.boardSizeForLevel(this.level);
+    this.boardRows = size.rows;
+    this.boardCols = size.cols;
     this.gameOver = false;
     this.cascadeCount = 1;
     this.shuffles = 0;
