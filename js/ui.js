@@ -7,7 +7,10 @@ import {
   DISPLAY_HIGH_SCORE_COUNT,
 } from './scores.js';
 
-const game = new Game();
+const params = new URLSearchParams(window.location.search);
+const lvlParam = Number(params.get('level'));
+const startLevel = Number.isFinite(lvlParam) && lvlParam > 0 ? Math.floor(lvlParam) : 1;
+const game = new Game({ level: startLevel });
 let dragStart = null;
 const boardEl = document.getElementById('game');
 
@@ -228,7 +231,7 @@ export async function startGame() {
 export function restartGame() {
   document.getElementById('gameover-overlay').classList.remove('visible');
   document.getElementById('shuffle-overlay').classList.remove('visible');
-  game.resetGame();
+  game.resetGame(startLevel);
   updateBackground();
   renderBoard();
   resetHint();
@@ -262,7 +265,7 @@ boardEl.addEventListener('pointerdown', onBoardPointerDown);
 boardEl.addEventListener('pointerup', onBoardPointerUp);
 
 // Initial setup
-game.resetGame();
+game.resetGame(startLevel);
 renderBoard();
 resetHint();
 setTimeout(
