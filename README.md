@@ -21,6 +21,7 @@ Completely vibe-coded to test AI capabilities using `ChatGPT o4-mini-high` (init
 - **High Scores**: Submit your name after game over to save your score and the level reached. View the top results via the trophy button.
 - **Random Tones**: Each match plays a random note using Tone.js.
 - **Shuffles**: Earn a shuffle every 100 points to continue when no moves remain.
+- **Lock Tiles from Level 30**: After matches, new tiles have a small chance to be 🔒 locks. Locks block matches until cleared by a row/column or board clear.
 
 ## Getting Started
 

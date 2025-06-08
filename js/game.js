@@ -1,6 +1,7 @@
 import { playRandomTone, playJingle } from './audio.js';
 
 export const tileTypes = ["💎", "🔶", "🔷", "🔴", "🟢", "🟣"];
+export const lockTile = "🔒";
 
 export function findRuns(board, length) {
   const rows = board.length;
@@ -13,7 +14,8 @@ export function findRuns(board, length) {
       if (
         c < cols &&
         board[r][c] === board[r][c - 1] &&
-        board[r][c] !== null
+        board[r][c] !== null &&
+        board[r][c] !== lockTile
       ) {
         run++;
       } else {
@@ -33,7 +35,8 @@ export function findRuns(board, length) {
       if (
         r < rows &&
         board[r][c] === board[r - 1][c] &&
-        board[r][c] !== null
+        board[r][c] !== null &&
+        board[r][c] !== lockTile
       ) {
         run++;
       } else {
@@ -88,6 +91,11 @@ export class Game {
     return tileTypes[Math.floor(this.random() * tileTypes.length)];
   }
 
+  getAddedTile() {
+    if (this.level >= 30 && this.random() < 0.1) return lockTile;
+    return this.getRandomTile();
+  }
+
   generateBoard() {
     const b = [];
     for (let r = 0; r < this.boardRows; r++) {
@@ -104,6 +112,7 @@ export class Game {
   }
 
   isMatch(b, r, c, t) {
+    if (t === lockTile) return false;
     return (
       (c >= 2 && b[r][c - 1] === t && b[r][c - 2] === t) ||
       (r >= 2 && b[r - 1][c] === t && b[r - 2][c] === t)
@@ -128,7 +137,8 @@ export class Game {
         if (
           this.board[r][c] &&
           this.board[r][c] === this.board[r][c + 1] &&
-          this.board[r][c] === this.board[r][c + 2]
+          this.board[r][c] === this.board[r][c + 2] &&
+          this.board[r][c] !== lockTile
         )
           m.push([r, c], [r, c + 1], [r, c + 2]);
     for (let c = 0; c < this.boardCols; c++)
@@ -136,7 +146,8 @@ export class Game {
         if (
           this.board[r][c] &&
           this.board[r][c] === this.board[r + 1][c] &&
-          this.board[r][c] === this.board[r + 2][c]
+          this.board[r][c] === this.board[r + 2][c] &&
+          this.board[r][c] !== lockTile
         )
           m.push([r, c], [r + 1, c], [r + 2, c]);
     return Array.from(new Set(m.map(JSON.stringify)), JSON.parse);
@@ -271,10 +282,10 @@ export class Game {
     if (this.boardCols > prevCols || this.boardRows > prevRows) {
       for (let r = 0; r < prevRows; r++)
         for (let c = prevCols; c < this.boardCols; c++)
-          this.board[r][c] = this.getRandomTile();
+          this.board[r][c] = this.getAddedTile();
       for (let r = prevRows; r < this.boardRows; r++) {
         this.board[r] = [];
-        for (let c = 0; c < this.boardCols; c++) this.board[r][c] = this.getRandomTile();
+        for (let c = 0; c < this.boardCols; c++) this.board[r][c] = this.getAddedTile();
       }
     }
 
@@ -302,7 +313,7 @@ export class Game {
         }
       }
       for (let r = 0; r < empty; r++) {
-        this.board[r][c] = this.getRandomTile();
+        this.board[r][c] = this.getAddedTile();
         fallMap[`${r},${c}`] = empty - r;
       }
     }
