@@ -1,4 +1,4 @@
-import { Game } from './game.js';
+import { Game, lockTile } from './game.js';
 import { toggleSoundEnabled, isSoundEnabled, initAudio } from './audio.js';
 import {
   loadHighScores,
@@ -68,6 +68,7 @@ function renderBoard() {
           game.selectedTile.c === c
         )
       );
+      cell.classList.toggle('locked', game.board[r][c] === lockTile);
     }
   }
   updateUI();

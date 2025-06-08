@@ -176,6 +176,7 @@ export class Game {
     if (this.gameOver) return;
     resetHint();
     if (!this.selectedTile) {
+      if (this.board[r][c] === lockTile) return;
       this.cascadeCount = 1;
       this.selectedTile = { r, c };
       return renderBoard();
@@ -186,6 +187,15 @@ export class Game {
       return renderBoard();
     }
     if (Math.abs(sr - r) + Math.abs(sc - c) === 1) {
+      if (this.board[sr][sc] === lockTile || this.board[r][c] === lockTile) {
+        this.selectedTile = null;
+        renderBoard();
+        if (shakeTiles) shakeTiles([
+          [sr, sc],
+          [r, c],
+        ]);
+        return;
+      }
       this.swap(sr, sc, r, c);
       if (this.findAllMatches().length > 0) {
         this.selectedTile = null;
@@ -202,7 +212,7 @@ export class Game {
         return; // avoid clearing shake animation
       }
     } else {
-      this.selectedTile = { r, c };
+      if (this.board[r][c] !== lockTile) this.selectedTile = { r, c };
     }
     renderBoard();
   }
